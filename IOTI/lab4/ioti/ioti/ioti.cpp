@@ -6,6 +6,9 @@
 // отключаем встроенный макрос студии
 #undef max
 
+// Точность
+const float PRECISION = 1E-5;
+
 // Штука для казуалов
 using namespace std;
 
@@ -211,7 +214,7 @@ vector<vector<Fvar>> least_cost(vector<vector<float>> Costs, vector<float> Consu
 int find_equal(vector<Point> * path, Point el) {
 	int c = 0;
 	for (int i = 0; i < path->size(); ++i) {
-		if ((fabs((*path)[i].x - el.x) < 0.00001) && (fabs((*path)[i].y - el.y)) < 0.00001) c++;
+		if ((fabs((*path)[i].x - el.x) < PRECISION) && (fabs((*path)[i].y - el.y)) < PRECISION) c++;
 	}
 	return c;
 }
@@ -319,7 +322,7 @@ void Distribution_method(vector<vector<float>> * Cost, vector<float> * Consumer,
 		index = 0;
 		for (int i = 0; i < (pVector).size(); ++i) {
 			for (int j = 0; j < (pVector)[i].size(); ++j) {
-				if (fabs((pVector)[i][j].value) > 0.000001) {
+				if (fabs((pVector)[i][j].value) > PRECISION) {
 					S += (*Cost)[i][j] * (pVector)[i][j].value;
 				}
 			}
@@ -385,7 +388,7 @@ void Distribution_method(vector<vector<float>> * Cost, vector<float> * Consumer,
 				((pVector)[((Cycles[index])[i]).y][(Cycles[index])[i].x].value) += minInNeg;
 			}
 			else {
-				if (fabs((pVector)[((Cycles[index])[i]).y][(Cycles[index])[i].x].value - minInNeg) < 0.00001) {
+				if (fabs((pVector)[((Cycles[index])[i]).y][(Cycles[index])[i].x].value - minInNeg) < PRECISION) {
 					((pVector)[((Cycles[index])[i]).y][(Cycles[index])[i].x].exist) = false;
 				}
 				((pVector)[((Cycles[index])[i]).y][(Cycles[index])[i].x].value) -= minInNeg;
@@ -400,7 +403,7 @@ void Distribution_method(vector<vector<float>> * Cost, vector<float> * Consumer,
 	S = 0;
 	for (int i = 0; i < (pVector).size(); ++i) {
 		for (int j = 0; j < (pVector)[i].size(); ++j) {
-			if (fabs((pVector)[i][j].value) > 0.000001) {
+			if (fabs((pVector)[i][j].value) > PRECISION) {
 				S += (*Cost)[i][j] * (pVector)[i][j].value;
 			}
 		}
@@ -408,6 +411,7 @@ void Distribution_method(vector<vector<float>> * Cost, vector<float> * Consumer,
 	printf("\n> F(x)=%.4g", S);
 }
 
+// очевидно, находится сумма вектора
 float sum(vector<float> * vec) {
 	float S = 0;
 	for (int i = 0; i < vec->size(); ++i) {
@@ -419,7 +423,7 @@ float sum(vector<float> * vec) {
 
 int checkBalance(vector<float> * vec1, vector<float> * vec2) {
 	//if(vec1->size()==vec2->size()) {!!!
-	if (fabs(sum(vec1) - sum(vec2)) < 0.000001) {
+	if (fabs(sum(vec1) - sum(vec2)) < PRECISION) {
 		return 1;
 	}
 	//}
@@ -465,7 +469,7 @@ void Potential_method(vector<vector<float>> * Cost, vector<float> * Consumer, ve
 		index = 0;
 		for (int i = 0; i < (pVector).size(); ++i) {
 			for (int j = 0; j < (pVector)[i].size(); ++j) {
-				if (fabs((pVector)[i][j].value) > 0.000001) {
+				if (fabs((pVector)[i][j].value) > PRECISION) {
 					S += (*Cost)[i][j] * (pVector)[i][j].value;
 				}
 			}
@@ -500,7 +504,7 @@ void Potential_method(vector<vector<float>> * Cost, vector<float> * Consumer, ve
 			for (int j = 0; j < (pVector)[i].size(); ++j) {
 				if (!(pVector)[i][j].exist) {
 					printf("delta%i%i=c%i%i-(u%i+v%i)=%.4g\n", i + 1, j + 1, i + 1, j + 1, i + 1, j + 1, ((*Cost)[i][j] - (U[i] + V[j])));
-					if (((*Cost)[i][j] - (U[i] + V[j])) < -0.00001) {
+					if (((*Cost)[i][j] - (U[i] + V[j])) < -PRECISION) {
 						negindex.y = i; negindex.x = j;
 					}
 				}
@@ -548,7 +552,7 @@ void Potential_method(vector<vector<float>> * Cost, vector<float> * Consumer, ve
 				((pVector)[((result)[i]).y][(result)[i].x].value) += minInNeg;
 			}
 			else {
-				if (fabs(((pVector)[((result)[i]).y][(result)[i].x].value) - minInNeg) < 0.00001)
+				if (fabs(((pVector)[((result)[i]).y][(result)[i].x].value) - minInNeg) < PRECISION)
 					((pVector)[((result)[i]).y][(result)[i].x].exist) = false;
 				((pVector)[((result)[i]).y][(result)[i].x].value) -= minInNeg;
 			}
@@ -563,7 +567,7 @@ void Potential_method(vector<vector<float>> * Cost, vector<float> * Consumer, ve
 	S = 0;
 	for (int i = 0; i < (pVector).size(); ++i) {
 		for (int j = 0; j < (pVector)[i].size(); ++j) {
-			if (fabs((pVector)[i][j].value) > 0.000001) {
+			if (fabs((pVector)[i][j].value) > PRECISION) {
 				S += (*Cost)[i][j] * (pVector)[i][j].value;
 			}
 		}
@@ -579,10 +583,11 @@ int main() {
 	vector<vector<float>> Cost_matrix;
 	vector<float> Consumer, Stock;
 
-	printf("Введите m,n:");
-	scanf_s("%i %i", &m, &n);
+	cout << "Введите количество запасов m и потребностей n:" << endl;
+	cout << "m: "; cin >> m;
+	cout << "n: "; cin >> n;
 
-	puts("Введите матрицу стоимости:");
+	cout << "Введите матрицу стоимости:" << endl;
 	Cost_matrix = scanNewMatr(m, n);
 	puts("Потребности:");
 	Consumer = scanNewArray(n);
@@ -592,9 +597,9 @@ int main() {
 	puts("---------------");
 
 	int answer = 0;
-	printf("Каким методом хотите решить задачу (0-Методом потенциалов, 1-Распределительным методом):");
+	printf("Каким методом хотите решить задачу (1-Методом потенциалов, 2-Распределительным методом):");
 	scanf_s("%i", &answer);
-	if (answer == 1) {
+	if (answer == 2) {
 		Distribution_method(&Cost_matrix, &Consumer, &Stock);
 	}
 	else {
