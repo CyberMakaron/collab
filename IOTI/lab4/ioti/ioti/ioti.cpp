@@ -7,7 +7,7 @@
 #undef max
 
 // Точность
-const float PRECISION = 1E-5;
+const float PRECISION = 1E-5f;
 
 // Штука для казуалов
 using namespace std;
@@ -68,7 +68,7 @@ vector<vector<float>> scanNewMatr(int m, int n) {
 
 // Вывод одномерного массива
 void printArray(const vector<float> &array) {
-	for (int i = 0; i < array.size(); ++i) {
+	for (size_t i = 0; i < array.size(); ++i) {
 		printf("%-5.2g", array[i]); // заменить на cout?
 	}
 	cout << endl;
@@ -76,8 +76,8 @@ void printArray(const vector<float> &array) {
 
 // Вывод матрицы
 void printMatr(vector<vector<float>> matrix) {
-	for (int i = 0; i < matrix.size(); ++i) {
-		for (int j = 0; j < matrix[i].size(); ++j) {
+	for (size_t i = 0; i < matrix.size(); ++i) {
+		for (size_t j = 0; j < matrix[i].size(); ++j) {
 			cout << matrix[i][j] << ' ';
 		}
 		cout << endl;
@@ -86,8 +86,8 @@ void printMatr(vector<vector<float>> matrix) {
 
 // Вывод матрицы, состоящей из Fvar
 void printMatr(vector<vector<Fvar>> matrix) {
-	for (int i = 0; i < matrix.size(); ++i) {
-		for (int j = 0; j < matrix[i].size(); ++j) {
+	for (size_t i = 0; i < matrix.size(); ++i) {
+		for (size_t j = 0; j < matrix[i].size(); ++j) {
 			if ((matrix[i][j]).exist) {
 				// Выравнивается по левому краю, ширина поля 7, точность 3
 				printf("%-7.3g", (matrix[i][j]).value);
@@ -103,7 +103,7 @@ void printMatr(vector<vector<Fvar>> matrix) {
 
 // Вывод массива точек
 void printArray(vector<Point> array) {
-	for (int i = 0; i < array.size(); ++i) {
+	for (size_t i = 0; i < array.size(); ++i) {
 		printf("(%i,%i)->", array[i].y, array[i].x);
 	}
 	cout << endl;
@@ -114,8 +114,8 @@ void printArray(vector<Point> array) {
 // Возвращает точку (x, y), в которой находится минимальный элемент в матрице. Строка и столбец с индексами ignoreX, ignoreY не учитываются
 Point findMin(const vector<vector<float>> &matrix, int ignoreY = -1, int ignoreX = -1) {
 	Point MinElement = Point(0, 0);
-	for (int i = 0; i < matrix.size(); ++i) {
-		for (int j = 0; j < matrix[i].size(); ++j) {
+	for (size_t i = 0; i < matrix.size(); ++i) {
+		for (size_t j = 0; j < matrix[i].size(); ++j) {
 			if ((matrix[i][j] < matrix[MinElement.y][MinElement.x]) && (i != ignoreY) && (j != ignoreX)) {
 				MinElement.y = i;
 				MinElement.x = j;
@@ -134,7 +134,7 @@ void deleteRow(vector<vector<T>> &matrix, int Row) {
 // Удаление столбца из матрицы
 template <typename T>
 void deleteCol(vector<vector<T>> &matrix, int Column) {
-	for (int i = 0; i < matrix.size(); ++i) {
+	for (size_t i = 0; i < matrix.size(); ++i) {
 		matrix[i].erase(matrix[i].cbegin() + Column);
 	}
 }
@@ -146,10 +146,10 @@ vector<vector<Fvar>> least_cost(vector<vector<float>> Costs, vector<float> Consu
 	vector<vector<Fvar>> tmpMatrix;
 	vector<vector<Point>> fix;
 
-	for (int i = 0; i < Costs.size(); ++i) {
+	for (size_t i = 0; i < Costs.size(); ++i) {
 		tmpMatrix.push_back(vector<Fvar>());
 		fix.push_back(vector<Point>());
-		for (int j = 0; j < Costs[0].size(); ++j) {
+		for (size_t j = 0; j < Costs[0].size(); ++j) {
 			tmpMatrix[i].push_back(Fvar());
 			fix[i].push_back(Point(j, i));
 		}
@@ -213,15 +213,16 @@ vector<vector<Fvar>> least_cost(vector<vector<float>> Costs, vector<float> Consu
 // тут делается c++
 int find_equal(vector<Point> * path, Point el) {
 	int c = 0;
-	for (int i = 0; i < path->size(); ++i) {
+	for (size_t i = 0; i < path->size(); ++i) {
 		if ((fabs((*path)[i].x - el.x) < PRECISION) && (fabs((*path)[i].y - el.y)) < PRECISION) c++;
 	}
 	return c;
 }
 
 bool find_intersection(vector<Point> * path, Point el) {
-	float dx1, dy1, dx, dy, S;
-	for (int i = 1; i < path->size() - 1; ++i) {
+	// В оригинале почему-то здесь стоял float
+	int dx1, dy1, dx, dy, S;
+	for (size_t i = 1; i < path->size() - 1; ++i) {
 		if (((*path)[i].x == el.x) || ((*path)[i].y == el.y)) {
 			//printf("x1=%i y1=%i, x2=%i y2=%i, x=%i y=%i\n",(*path)[path->size()-1].x,(*path)[path->size()-1].y,el.x,el.y,(*path)[i].x,(*path)[i].y);
 			dx1 = (*path)[path->size() - 1].x - el.x;
@@ -244,7 +245,7 @@ bool calc_cycle(vector<vector<float>> * cost, vector<vector<Fvar>> * pVector, ve
 	//printf("%i ",find_equal(path,(*path)[(*path).size() - 1]));
 	//printArray(*path);
 	if (find_equal(path, (*path)[(*path).size() - 1]) == 1) {
-		for (int i = (*path)[(*path).size() - 1].x + 1; i < (*pVector)[0].size(); ++i) {
+		for (size_t i = (*path)[(*path).size() - 1].x + 1; i < (*pVector)[0].size(); ++i) {
 			//printMatr(*cost);
 			//printf("%i,%i ",(*path)[(*path).size()-1].y,i);
 			if (!find_intersection(path, Point(i, (*path)[(*path).size() - 1].y)))
@@ -257,7 +258,7 @@ bool calc_cycle(vector<vector<float>> * cost, vector<vector<Fvar>> * pVector, ve
 				}
 		}
 
-		for (int i = (*path)[(*path).size() - 1].y + 1; i < (*pVector).size(); ++i) {
+		for (size_t i = (*path)[(*path).size() - 1].y + 1; i < (*pVector).size(); ++i) {
 			//printf("%i,%i ",(*path)[(*path).size()-1].y,i);
 			if (!find_intersection(path, Point((*path)[(*path).size() - 1].x, i)))
 				if (((*pVector)[i][(*path)[(*path).size() - 1].x].exist)) {
@@ -308,7 +309,8 @@ bool calc_cycle(vector<vector<float>> * cost, vector<vector<Fvar>> * pVector, ve
 }
 
 void Distribution_method(vector<vector<float>> * Cost, vector<float> * Consumer, vector<float> * Stock) {
-	float S = 0, delta = 0, index = 0, mindelta = 0;
+	float S = 0, delta = 0, mindelta = 0;
+	size_t index = 0;
 	vector<vector<Point>> Cycles;
 	int sign = 1;
 
@@ -320,8 +322,8 @@ void Distribution_method(vector<vector<float>> * Cost, vector<float> * Consumer,
 		S = 0;
 		mindelta = numeric_limits<float>::max();
 		index = 0;
-		for (int i = 0; i < (pVector).size(); ++i) {
-			for (int j = 0; j < (pVector)[i].size(); ++j) {
+		for (size_t i = 0; i < (pVector).size(); ++i) {
+			for (size_t j = 0; j < (pVector)[i].size(); ++j) {
 				if (fabs((pVector)[i][j].value) > PRECISION) {
 					S += (*Cost)[i][j] * (pVector)[i][j].value;
 				}
@@ -329,8 +331,8 @@ void Distribution_method(vector<vector<float>> * Cost, vector<float> * Consumer,
 		}
 
 		puts("Строим циклы пересчёта:");
-		for (int i = 0; i < (pVector).size(); ++i) {
-			for (int j = 0; j < (pVector)[i].size(); ++j) {
+		for (size_t i = 0; i < (pVector).size(); ++i) {
+			for (size_t j = 0; j < (pVector)[i].size(); ++j) {
 				if (!(pVector)[i][j].exist) {
 					puts("/////////////////////////");
 					vector<Point> path, result;
@@ -347,7 +349,7 @@ void Distribution_method(vector<vector<float>> * Cost, vector<float> * Consumer,
 						int ptsize = result.size();
 
 						//printArray(result);
-						for (int k = 0; k < result.size() - 1; ++k) {
+						for (size_t k = 0; k < result.size() - 1; ++k) {
 							delta += sign * (*Cost)[result[k].y][result[k].x];
 							sign *= -1;
 						}
@@ -374,7 +376,7 @@ void Distribution_method(vector<vector<float>> * Cost, vector<float> * Consumer,
 		}
 
 		float minInNeg = numeric_limits<float>::max();
-		for (int i = 1; i < Cycles[index].size(); i += 2) {
+		for (size_t i = 1; i < Cycles[index].size(); i += 2) {
 			if (minInNeg > ((pVector)[((Cycles[index])[i]).y][(Cycles[index])[i].x].value)) {
 				minInNeg = ((pVector)[((Cycles[index])[i]).y][(Cycles[index])[i].x].value);
 			}
@@ -383,7 +385,7 @@ void Distribution_method(vector<vector<float>> * Cost, vector<float> * Consumer,
 
 		sign = 1;
 		printArray(Cycles[index]); puts("");
-		for (int i = 0; i < Cycles[index].size() - 1; i++) {
+		for (size_t i = 0; i < Cycles[index].size() - 1; i++) {
 			if (sign == 1) {
 				((pVector)[((Cycles[index])[i]).y][(Cycles[index])[i].x].value) += minInNeg;
 			}
@@ -401,8 +403,8 @@ void Distribution_method(vector<vector<float>> * Cost, vector<float> * Consumer,
 	} while (1);
 
 	S = 0;
-	for (int i = 0; i < (pVector).size(); ++i) {
-		for (int j = 0; j < (pVector)[i].size(); ++j) {
+	for (size_t i = 0; i < (pVector).size(); ++i) {
+		for (size_t j = 0; j < (pVector)[i].size(); ++j) {
 			if (fabs((pVector)[i][j].value) > PRECISION) {
 				S += (*Cost)[i][j] * (pVector)[i][j].value;
 			}
@@ -414,7 +416,7 @@ void Distribution_method(vector<vector<float>> * Cost, vector<float> * Consumer,
 // очевидно, находится сумма вектора
 float sum(vector<float> * vec) {
 	float S = 0;
-	for (int i = 0; i < vec->size(); ++i) {
+	for (size_t i = 0; i < vec->size(); ++i) {
 		S += (*vec)[i];
 	}
 	return S;
@@ -441,7 +443,7 @@ void Potential_method(vector<vector<float>> * Cost, vector<float> * Consumer, ve
 			printf("нового поставщика (с %.2g ед. продукции) и добавим нулевую строку в конец матрицы стоимостей:\n", sum(Consumer) - sum(Stock));
 			Stock->push_back(sum(Consumer) - sum(Stock));
 			Cost->push_back(vector<float>());
-			for (int i = 0; i < (*Cost)[0].size(); ++i) {
+			for (size_t i = 0; i < (*Cost)[0].size(); ++i) {
 				(*Cost)[Cost->size() - 1].push_back(0);
 			}
 			printMatr(*Cost); puts("");
@@ -450,7 +452,7 @@ void Potential_method(vector<vector<float>> * Cost, vector<float> * Consumer, ve
 		else if ((Consumer->size() < Stock->size()) || (sum(Consumer) < sum(Stock))) {
 			printf("нового потребителя (с %.2g ед. продукции) и добавим нулевой столбец в конец матрицы стоимостей:\n", sum(Stock) - sum(Consumer));
 			Consumer->push_back(sum(Stock) - sum(Consumer));
-			for (int i = 0; i < (*Cost).size() - 1; ++i) {
+			for (size_t i = 0; i < (*Cost).size() - 1; ++i) {
 				(*Cost)[i].push_back(0);
 			}
 			printMatr(*Cost); puts("");
@@ -467,8 +469,8 @@ void Potential_method(vector<vector<float>> * Cost, vector<float> * Consumer, ve
 		S = 0;
 		mindelta = numeric_limits<float>::max();
 		index = 0;
-		for (int i = 0; i < (pVector).size(); ++i) {
-			for (int j = 0; j < (pVector)[i].size(); ++j) {
+		for (size_t i = 0; i < (pVector).size(); ++i) {
+			for (size_t j = 0; j < (pVector)[i].size(); ++j) {
 				if (fabs((pVector)[i][j].value) > PRECISION) {
 					S += (*Cost)[i][j] * (pVector)[i][j].value;
 				}
@@ -480,28 +482,28 @@ void Potential_method(vector<vector<float>> * Cost, vector<float> * Consumer, ve
 		//           ДОДЕЛАТЬ РАСЧЁТ ПОТЕНЦИАЛОВ !!!
 		vector<float> U;// = (float*)calloc((pVector).size(), sizeof(float));
 		vector<float> V;// = (float*)calloc((pVector)[0].size(), sizeof(float));
-		for (int i = 0; i < (pVector).size(); ++i) U.push_back(0);
-		for (int i = 0; i < (pVector)[0].size(); ++i) V.push_back(0);
+		for (size_t i = 0; i < (pVector).size(); ++i) U.push_back(0);
+		for (size_t i = 0; i < (pVector)[0].size(); ++i) V.push_back(0);
 
 
-		for (int i = 0; i < (pVector).size(); ++i) {
-			for (int j = 0; j < (pVector)[i].size(); ++j) {
+		for (size_t i = 0; i < (pVector).size(); ++i) {
+			for (size_t j = 0; j < (pVector)[i].size(); ++j) {
 				if ((pVector)[i][j].exist) {
 					printf("v%i+u%i=%.4g\n", j + 1, i + 1, (*Cost)[i][j]);
 				}
 			}
 		}
 
-		for (int i = 0; i < U.size(); ++i) {
+		for (size_t i = 0; i < U.size(); ++i) {
 			printf("u%i=", i + 1); scanf_s("%f", &(U[i]));
 		}
-		for (int i = 0; i < V.size(); ++i) {
+		for (size_t i = 0; i < V.size(); ++i) {
 			printf("v%i=", i + 1); scanf_s("%f", &(V[i]));
 		}
 
 		Point negindex; negindex.x = -1; negindex.y = -1;
-		for (int i = 0; i < (pVector).size(); ++i) {
-			for (int j = 0; j < (pVector)[i].size(); ++j) {
+		for (size_t i = 0; i < (pVector).size(); ++i) {
+			for (size_t j = 0; j < (pVector)[i].size(); ++j) {
 				if (!(pVector)[i][j].exist) {
 					printf("delta%i%i=c%i%i-(u%i+v%i)=%.4g\n", i + 1, j + 1, i + 1, j + 1, i + 1, j + 1, ((*Cost)[i][j] - (U[i] + V[j])));
 					if (((*Cost)[i][j] - (U[i] + V[j])) < -PRECISION) {
@@ -534,20 +536,20 @@ void Potential_method(vector<vector<float>> * Cost, vector<float> * Consumer, ve
 		sign = 1;
 
 		float minInNeg = numeric_limits<float>::max();
-		for (int i = 1; i < result.size(); i += 2) {
+		for (size_t i = 1; i < result.size(); i += 2) {
 			if (minInNeg > ((pVector)[((result)[i]).y][(result)[i].x].value)) {
 				minInNeg = ((pVector)[((result)[i]).y][(result)[i].x].value);
 			}
 		}
 
 		S = 0;
-		for (int k = 0; k < result.size() - 1; ++k) {
+		for (size_t k = 0; k < result.size() - 1; ++k) {
 			S += sign * (*Cost)[result[k].y][result[k].x] * minInNeg;
 			sign *= -1;
 		}
 
 		sign = 1;
-		for (int i = 0; i < result.size() - 1; i++) {
+		for (size_t i = 0; i < result.size() - 1; i++) {
 			if (sign == 1) {
 				((pVector)[((result)[i]).y][(result)[i].x].value) += minInNeg;
 			}
@@ -565,8 +567,8 @@ void Potential_method(vector<vector<float>> * Cost, vector<float> * Consumer, ve
 	} while (1);
 
 	S = 0;
-	for (int i = 0; i < (pVector).size(); ++i) {
-		for (int j = 0; j < (pVector)[i].size(); ++j) {
+	for (size_t i = 0; i < (pVector).size(); ++i) {
+		for (size_t j = 0; j < (pVector)[i].size(); ++j) {
 			if (fabs((pVector)[i][j].value) > PRECISION) {
 				S += (*Cost)[i][j] * (pVector)[i][j].value;
 			}
