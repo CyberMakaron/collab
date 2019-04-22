@@ -44,13 +44,11 @@ public:
     void print_codes();
     double sum_probs(int begin,int end);
     void code_filling_step(int begin,int end);
-    //Строит однозначно декодируемый код Шеннона-Фано или Хаффмана 
-    void build_code_arr();
+    //Строит оптимальный код (0 - Шеннона-Фано, 1 - Хаффмана) 
+    void build_code_arr(int mode);
     //Строит новый алфавит из n-грамм
     Alphabet build_nsized_Alphabet(int n);
     Symbol operator[](int i);
 };  
-
-vector<int> word_to_index_arr(Alphabet a,string s);
 
 

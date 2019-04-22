@@ -93,7 +93,7 @@ double Alphabet::sum_probs(int begin,int end){
 
 //Шаг алгоритма Шеннона-Фано.
 void Alphabet::code_filling_step(int begin,int end){
-	//номер элемента делящий алфавит на 2 равные по вероятностям части.
+	//номер элемента делящий алфавит на 2 части суммы вероятностей которых равны.
 	int mid=begin;
 	//Флаг остановки
 	bool flag=true;
@@ -121,7 +121,7 @@ void Alphabet::code_filling_step(int begin,int end){
 	}
 };
 
-void Alphabet::build_code_arr(){
+void Alphabet::build_code_arr(int mode){
 	//Сортировка алфавита по убыванию.
 	sort(this->arr.begin(),this->arr.end(), [](Symbol& a, Symbol& b){
 			if(a.get_prob()==b.get_prob()){
@@ -133,7 +133,17 @@ void Alphabet::build_code_arr(){
 		this->arr[i].clear_code();
 	}
 	//Заполнение кодов символов.
-	this->code_filling_step(0,this->size);
+	switch (mode){
+		case 0:
+			this->code_filling_step(0,this->size);
+		break;
+		case 1:
+			cout<<"НУ ТУТ КАРОЧЕ ХАФФМАН"<<endl;	
+		default:
+			cout<<"НЕКОРЕКТНЫЙ ВЫБОР АЛГОРИТМА ПОСТРОЕНИЯ ОПТИМАЛЬНОГО КОДА"<<endl<<"ИСПРАВЬТЕ ИСХОДНЫЙ КОД"<<endl;
+			exit(1);
+		break;
+	};
 	//Сортировка в лексикографическом порядке.
 	sort(this->arr.begin(),this->arr.end(), [](Symbol& a, Symbol& b){
 		return a.get_pos()<b.get_pos();
@@ -156,7 +166,7 @@ Alphabet Alphabet::build_nsized_Alphabet(int n){
 	//Переменная для записи номера символа в алфавите.
 	int j=1;
 	do{
-		//Построение нового символа алфавита по массиву индексов.
+		//Построение нового символа алфавита.
 		for(int i=1;i<=n;i++){
 			int index = index_arr[i];
 			t_symb+=this->arr[index].get_symb();

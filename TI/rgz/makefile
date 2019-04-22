@@ -1,7 +1,7 @@
 all: test_build test_run
 
 test_build:
-	g++ test.cpp code.cpp -o test.out 
+	g++ test.cpp code.cpp -o test.out -O3
 
 test_run: test_build
 	./test.out
