@@ -10,6 +10,7 @@
 #include <list>
 #include <queue>
 #include <sstream>
+#include <bitset>
 using namespace std;
 struct symb {
 	string s;		//символ
@@ -237,15 +238,15 @@ void getNgramms(symb * src, int m, symb * frs, int l, symb * res, int n) {
 	}
 }
 //возвращает среднюю длину кодов, хранящихся в массиве а. Добавить возможность вычислять либо дл. кода Шеннона, либо Хаффмана
-void averageLen(symb * a, int n) {
+void averageLen(symb * a, int n, int blockSize) {
 	double maxlen = 0, maxlen1 = 0, maxlen2 = 0;
 	for (int i = 0; i < n; i++) {
 		//maxlen += a[i].prob * a[i].top;
 		maxlen1 += a[i].prob * a[i].codeSH.length();
 		maxlen2 += a[i].prob * a[i].codeH.length();
 	}
-	cout << "По Шеннону-Фано: " << maxlen1;
-	cout << ", по Хаффману: " << maxlen2 << endl;
+	cout << "По Шеннону-Фано: " << maxlen1/blockSize;
+	cout << ", по Хаффману: " << maxlen2/blockSize << endl;
 }
 	
 //Возвращает этропию алфавита источника а размером n.
@@ -256,39 +257,7 @@ double entropy(symb * a, int n) {
 	}
 	return -res;
 }
-///ПЕРЕПИСАТЬ!
-//возвращает строку, которая содержит закодированное сообщение str с помощью алфавита a, n - размер блока
-string encode(string str, symb * a, int m, int n) {
-	string result = " ", tmp = " ";						//содержит кодируемый блок
-	int count, j = 0, i = 0;							//содержит количество символов в последнем блоке, если блок не полный
-	while (j != str.length()) {
-		for (i = 0; i < n; i++) {
-			if (i != str.length()) {					//во времменную строку записывается блок, который нужно закодировать
-				tmp[i] = str[j + i];
-			}
-			else {
-				exit(1);
-				count = i;
-			}
-		}
-		j += i;
-		//поиск кода для блока tmp 
-		for (int i = 0; i < m; i++) {
-			string code;
-			if (a[i].s == tmp) {
-				for (int j = 0; j <= a[i].top; j++) {
-					code += '0' + a[i].code[j];
-				}
-				result += code;
-				i = m;
-			}
-		}
-	}
-	//cout << "result = " << result << endl;
-	return result;
-}
-///РЕАЛИЗОВАТЬ!
-//Возвращает строку, которая содержит расшифрованное сообщение str с помощью алфавита a размером n
+
 string decode(string str, symb * a, int n, int blockSize) {
 	return NULL;
 }
@@ -311,6 +280,73 @@ symb* nGramms(symb* a, int n, int blockSize) {
 	return cur;
 }
 
+
+int search_Symb(symb *a, int n, string x) {
+	for (int i = 0; i < n; i++) {
+		if (a[i].s == x) {
+			return i;
+		}
+	}
+	return NULL;
+}
+
+string encode(symb* a, int n, string msg, int blockSize, bool isH) {
+	string tmp = "", prefix = "", res = "";
+	bitset <3> z(blockSize); //Добавочная строка, которая указывает на размер блока
+	cout << "Добавим к сообщению 3 бита - размер блока: " << z << endl;
+	prefix += z.to_string();
+	prefix += " ";
+
+	cout << "Разобъем сообщение на блоки:" << endl;
+	for (int i = 0; i < (msg.length() / blockSize); i++) {
+		for (int rPos = 0; rPos < blockSize; rPos++) {
+			tmp += msg[(i * blockSize) + rPos];
+		}
+		int pos = search_Symb(a, n, tmp);
+		cout << tmp << ": ";
+		if (isH) {
+			cout << a[pos].codeH;
+			res += a[pos].codeH;
+			res += " ";
+		}
+		else {
+			cout << a[pos].codeSH;
+			res += a[pos].codeSH;
+			res += " ";
+		}
+		cout << endl;
+		tmp = "";
+	}
+	if (msg.length() % blockSize) {
+		cout << "Последний блок не полный, добавим к нему " << msg.length() % blockSize << " символ(ов)." << endl;
+		cout << "Также добавим к сообщению количество символов, которые нужно будет отбросить при декодировании:";
+		bitset <3> z(msg.length() % blockSize);
+		prefix += z.to_string();
+		prefix += " ";
+		cout << z.to_string() << endl;
+		for (int i = msg.length() - (msg.length() % blockSize); i < msg.length(); i++) {
+			tmp += msg[i];
+		}
+		while (tmp.length() < blockSize) {
+			tmp += a[0].s[0];
+		}
+		cout << tmp << ": ";
+		int pos = search_Symb(a, n, tmp);
+		if (isH) {
+			cout << a[pos].codeH;
+			res += a[pos].codeH;
+			res += " ";
+		}
+		else {
+			cout << a[pos].codeSH;
+			res += a[pos].codeSH;
+		}
+		cout << endl;
+	}
+	res = prefix + res;
+	return res;
+}
+
 int main() {
 	setlocale(LC_ALL, "Rus");
 	int n;
@@ -325,11 +361,21 @@ int main() {
 	printAlphabet(a, n);
 	cout << "Энтропия источника:" << entropy(a, n) << endl;
 	cout << "Средняя длинна кода:"  << endl;
-	averageLen(a, n);
+	averageLen(a, n, 1);
 
-	cout << "Хотите поблочное кодирование? (Я не умею спрашивать нормально) 0/1" << endl;
+	string inp;
+	cout << "Введите сообщение, которое нужно закодировать: " << endl;
+	cin >> inp;
+
+	cout << "При кодировании использовать коды Хаффмана(1) или Шеннона-Фано(0)? " << endl;
+	bool isH;
+	cin >> isH;
+	cout << isH;
+
+	cout << "Использовать поблочное кодирование? 0/1" << endl;
 	int mode;
 	cin >> mode;
+
 	if (mode) {
 		int blockSize;
 		cout << "Введите длину блоков" << endl;
@@ -339,21 +385,29 @@ int main() {
 			cin >> mode;
 			if (mode == 0) exit(2);
 		}
-		symb *res = nGramms(a, n, blockSize);
+		symb* res = nGramms(a, n, blockSize);
 		int resn = (int)pow(n, blockSize);
 		for (int i = 0; i < resn; i++) {
 			res[i].top = -1;
 		}
+		sortProb(res, resn);
 		getCodes(0, resn - 1, res);
 		codeToStr(res, resn);
 		getCodesH(res, resn);
 		cout << "Полученные коды для " << blockSize << "-грамм: " << endl;
 		sortProb(res, resn);
+
 		printAlphabet(res, resn);
+		cout << "Средняя длинна кода:" << endl;
+		averageLen(res, resn, blockSize);
+		string resultStr = encode(res, resn, inp, blockSize, isH);
+		cout << "Результат кодирования сообщения " << inp << ":" << endl;
+		cout << resultStr;
 	}
-	//cout << "Введите строку, которую нужно закодировать" << endl;
-	//string src;
-	//cin >> src;
-	//string res = encode(src, a, n, 1);
-	//cout << "Результат кодирования строки: " << res << endl;
+	else {
+		string resultStr = encode(a, n, inp, 1, isH);
+		cout << "Результат кодирования сообщения " << inp << ":" << endl;
+		cout << resultStr;
+	}
+	
 }
