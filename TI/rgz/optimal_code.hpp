@@ -61,4 +61,5 @@ public:
     string decode_text(string code);
 };  
 
-
+//Возвращает строку с числом num записанным в двоичной форме.
+string num_to_binstr(unsigned num);

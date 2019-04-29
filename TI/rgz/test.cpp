@@ -5,15 +5,16 @@ using namespace std;
 
 int main(){
     int n,m;
-    cout<<"Размер алфавита- ";
+    string str;
+    cout<<"Размер алфавита - ";
     cin>>n;
-    cout<<"Размер блока- ";
+    cout<<"Размер блока - ";
     cin>>m;
     Alphabet a(n);
     a.read();
-    a.print_codes();
     Alphabet b=a.build_nsized_Alphabet(m);
-    unsigned m_check = b.get_symbol_size();
-    cout<< m<<" = "<<m_check<<endl;
+    cout<<"Введите слово для кодирования - ";
+    cin>>str;
+    b.encode_text(str);
     return 0;
 }

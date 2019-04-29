@@ -145,9 +145,9 @@ void Alphabet::build_code_arr(int mode){
 		break;
 	};
 	//Сортировка в лексикографическом порядке.
-	sort(this->arr.begin(),this->arr.end(), [](Symbol& a, Symbol& b){
+	/*sort(this->arr.begin(),this->arr.end(), [](Symbol& a, Symbol& b){
 		return a.get_pos()<b.get_pos();
-	});
+	});*/
 };
 
 Alphabet Alphabet::build_nsized_Alphabet(int n){
@@ -196,9 +196,46 @@ unsigned Alphabet::get_symbol_size(){
 
 
 string Alphabet::encode_text(string str){
+	//Результирующий код.
+	string result_code;
 
+	unsigned block_size = this->get_symbol_size();
+	cout<<"Размер блока = "<<block_size<<endl;
+	//Кол-во символов дописанных для дополнения последнего блока.
+	unsigned addition_symbols = block_size - (str.length()%block_size);
+	cout<<"Кол-во добавленных символов = "<<addition_symbols<<endl;
+	//Записываем размер блока и кол-во дописанных символов в начало кода.	
+	result_code+=num_to_binstr(block_size);
+	result_code+=num_to_binstr(addition_symbols);
+
+	//Дописываем последний блок до полноценного, если он кусочный.
+	for(int i=0;i<addition_symbols;i++)	str+=str[0];
+
+	//Вычисляем размер текста в блоках.
+	unsigned str_block_count=str.length()/block_size;
+
+	cout<<"str block count "<<str_block_count<<endl;
+	cout<<"str size "<<str.length()<<endl<<endl;
+	for(int i=0;i<str_block_count;i++){
+		//Срез строки размером равным размеру блока.
+		string block_slice;
+		cout<<"i = "<<i<<" pos = "<<i*block_size;
+		block_slice=str.substr(i*block_size,block_size);
+		cout<<" "<<block_slice<<endl;
+		block_slice.clear();
+		
+	};
+	
+	cout<<"encode end";
+	return result_code;
 };
 
 string Alphabet::decode_text(string code){
 
+};
+
+
+string num_to_binstr(unsigned num){
+	bitset<8> result((unsigned char)num);
+	return result.to_string();
 };
