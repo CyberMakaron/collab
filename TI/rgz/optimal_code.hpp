@@ -7,6 +7,7 @@
 
 using namespace std;
 
+
 //Cимвол алфавита. symb - сам символ, prob - вероятность появления.
 class Symbol{
     //Непосредственно символ.
@@ -15,6 +16,8 @@ class Symbol{
     double prob;
     //Оптимальный код для элемента алфавита.
     string code;
+    //true - код построен, false - код не построен.
+    bool code_status;
     //Позиция символа в алфавите
     unsigned long pos;
 public:
@@ -36,6 +39,7 @@ public:
 class Alphabet{
     vector<Symbol> arr;
     unsigned long size;
+    //true - код построен, false - код еще не построен.
 public:
     Alphabet(unsigned long size);
     void read();

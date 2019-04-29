@@ -5,7 +5,7 @@ using namespace std;
 
 int main(){
     int n,m;
-    string str;
+    string str,code;
     cout<<"Размер алфавита - ";
     cin>>n;
     cout<<"Размер блока - ";
@@ -15,6 +15,7 @@ int main(){
     Alphabet b=a.build_nsized_Alphabet(m);
     cout<<"Введите слово для кодирования - ";
     cin>>str;
-    b.encode_text(str);
+    code=b.encode_text(str);
+    cout<<"result code - "<<code;
     return 0;
 }

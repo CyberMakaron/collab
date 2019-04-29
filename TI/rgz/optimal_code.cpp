@@ -12,7 +12,11 @@ string Symbol::get_symb(){
     return this->symb;
 };
 string Symbol::get_code(){
-    return this->code;
+    if(this->code_status==false){
+		cout<<"Код символа не построен"<<endl;
+		exit(1);
+	}
+	else return this->code;
 };
 unsigned long Symbol::get_pos(){
     return this->pos;
@@ -24,6 +28,7 @@ void Symbol::set_symb(string origin){
     this->symb=origin;
 };
 void Symbol::set_code(string code){
+	this->code_status=true;
     this->code=code;
 };
 void Symbol::set_pos(unsigned long pos){
@@ -223,7 +228,23 @@ string Alphabet::encode_text(string str){
 		block_slice=str.substr(i*block_size,block_size);
 		cout<<" "<<block_slice<<endl;
 		block_slice.clear();
-		
+		//Поиск символа в алфавите.
+		int symbol_index=-1,j=0;
+		bool flag=true;
+		while((i<this->size)&&flag){
+			if(this->arr[j].get_symb()==block_slice){
+				symbol_index=j;
+				flag=false;
+			}
+			j++;
+		};
+		cout<<"founded word - "<<arr[symbol_index].get_code()<<endl;
+		//Запись кода символа в результирующий код.
+		if(symbol_index=-1){
+			cout<<"	Неверно введено слово (мне лень делать зацикливание или эксепшоны поэтому...). Завершение программы."<<endl;
+			exit(1);
+		}
+		else result_code+=this->arr[symbol_index].get_code();
 	};
 	
 	cout<<"encode end";
