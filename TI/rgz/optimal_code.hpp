@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <bitset>
 
 using namespace std;
 
@@ -34,7 +35,6 @@ public:
 
 class Alphabet{
     vector<Symbol> arr;
-    vector<string> code_arr;
     unsigned long size;
 public:
     Alphabet(unsigned long size);
@@ -43,12 +43,22 @@ public:
     void print();
     void print_codes();
     double sum_probs(int begin,int end);
-    void code_filling_step(int begin,int end);
+    //Шаг построения код Шеннона-Фано.
+    void shennoncode_build_step(int begin,int end);
     //Строит оптимальный код (0 - Шеннона-Фано, 1 - Хаффмана) 
     void build_code_arr(int mode);
     //Строит новый алфавит из n-грамм
     Alphabet build_nsized_Alphabet(int n);
+    //Возвращает размер символа алфавита
+    unsigned get_symbol_size();
     Symbol operator[](int i);
+    
+    //Кодирует строку str состоящую из символов этого алфавита. **Первые 8 бит** - размер блока. 
+    //**Вторые 8 бит** - кол-во добавленных символов при кусочном кодировании.
+    //Остальной код - закодированная строка.
+    string encode_text(string str);
+    //Декодирует code в строку состоящую из символов этого алфавита.
+    string decode_text(string code);
 };  
 
 
