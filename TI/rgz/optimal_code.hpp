@@ -17,7 +17,6 @@ class Symbol{
     //Оптимальный код для элемента алфавита.
     string code;
     //true - код построен, false - код не построен.
-    bool code_status;
     //Позиция символа в алфавите
     unsigned long pos;
 public:
@@ -67,3 +66,6 @@ public:
 
 //Возвращает строку с числом num записанным в двоичной форме.
 string num_to_binstr(unsigned num);
+
+//Возвращает число num записанным в двоичной форме в строке str.
+unsigned binstr_to_num(string str);

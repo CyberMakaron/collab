@@ -12,11 +12,7 @@ string Symbol::get_symb(){
     return this->symb;
 };
 string Symbol::get_code(){
-    if(this->code_status==false){
-		cout<<"Код символа не построен"<<endl;
-		exit(1);
-	}
-	else return this->code;
+return this->code;
 };
 unsigned long Symbol::get_pos(){
     return this->pos;
@@ -28,7 +24,6 @@ void Symbol::set_symb(string origin){
     this->symb=origin;
 };
 void Symbol::set_code(string code){
-	this->code_status=true;
     this->code=code;
 };
 void Symbol::set_pos(unsigned long pos){
@@ -205,10 +200,8 @@ string Alphabet::encode_text(string str){
 	string result_code;
 
 	unsigned block_size = this->get_symbol_size();
-	cout<<"Размер блока = "<<block_size<<endl;
 	//Кол-во символов дописанных для дополнения последнего блока.
 	unsigned addition_symbols = block_size - (str.length()%block_size);
-	cout<<"Кол-во добавленных символов = "<<addition_symbols<<endl;
 	//Записываем размер блока и кол-во дописанных символов в начало кода.	
 	result_code+=num_to_binstr(block_size);
 	result_code+=num_to_binstr(addition_symbols);
@@ -219,44 +212,72 @@ string Alphabet::encode_text(string str){
 	//Вычисляем размер текста в блоках.
 	unsigned str_block_count=str.length()/block_size;
 
-	cout<<"str block count "<<str_block_count<<endl;
-	cout<<"str size "<<str.length()<<endl<<endl;
 	for(int i=0;i<str_block_count;i++){
 		//Срез строки размером равным размеру блока.
 		string block_slice;
-		cout<<"i = "<<i<<" pos = "<<i*block_size;
 		block_slice=str.substr(i*block_size,block_size);
-		cout<<" "<<block_slice<<endl;
-		block_slice.clear();
 		//Поиск символа в алфавите.
 		int symbol_index=-1,j=0;
 		bool flag=true;
-		while((i<this->size)&&flag){
+		while((j<this->size)&&flag){
 			if(this->arr[j].get_symb()==block_slice){
 				symbol_index=j;
 				flag=false;
 			}
 			j++;
 		};
-		cout<<"founded word - "<<arr[symbol_index].get_code()<<endl;
 		//Запись кода символа в результирующий код.
-		if(symbol_index=-1){
+		if(flag){
 			cout<<"	Неверно введено слово (мне лень делать зацикливание или эксепшоны поэтому...). Завершение программы."<<endl;
 			exit(1);
 		}
 		else result_code+=this->arr[symbol_index].get_code();
 	};
-	
-	cout<<"encode end";
 	return result_code;
 };
 
 string Alphabet::decode_text(string code){
-
+	//Результирующий текст
+	string result_text;
+	//Считывание заголовка размером 16 бит с размером блока и кол-вом добавленных блоков.
+	unsigned block_size = binstr_to_num(code.substr(0,8));
+	unsigned addition_symbols = binstr_to_num(code.substr(8,8));
+	//Удаление заголовка из кода для дальнейшего декодирования.
+	code.erase(0,16);
+	//Каждый шаг цикла добавляет в результирующую строку блок из исходного алфавита, и удаляет из строки с кодом код блока.
+	while(code.length()!=0){
+		bool flag=true;
+		unsigned size_of_slice=1;
+		unsigned j;
+		//Поиск блока с кодом размером size_of_slice
+		while((size_of_slice<=60)&&flag){
+			j=0;
+			string slice=code.substr(0,size_of_slice);
+			//Поиск кода совпадающего с slice
+			while((j<this->size)&&flag){
+				if(this->arr[j].get_code()==slice){
+					flag=false;
+				}
+				else j++;
+			};
+			size_of_slice++;
+		};
+		result_text+=arr[j].get_symb();
+		//Удаление кода из начала строки 
+		code.erase(0,size_of_slice-1);
+	}
+	//Удаление добавленных при кодировке символов.
+	result_text.erase((result_text.length()-addition_symbols),addition_symbols);
+	return result_text;
 };
 
 
 string num_to_binstr(unsigned num){
 	bitset<8> result((unsigned char)num);
 	return result.to_string();
+};
+
+unsigned binstr_to_num(string str){
+	bitset<8> result(str);
+	return (unsigned)result.to_ulong();
 };
