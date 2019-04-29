@@ -1,13 +1,13 @@
 all: test_build test_run
 
 test_build:
-	g++ test.cpp optimal_code.cpp -o test.out -O3 -g
+	g++ src/test.cpp src/optimal_code.cpp -o build/test.out -O3 -g
 
 test_run: test_build
-	./test.out
+	build/test.out
 
 build:
-	g++ main.cpp optimal_code.cpp -o data_model.out
+	g++ src/main.cpp src/optimal_code.cpp -o build/data_model.out
 
 run: build
-	./data_model.out
+	build/data_model.out
