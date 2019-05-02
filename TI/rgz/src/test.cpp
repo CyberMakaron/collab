@@ -13,7 +13,5 @@ int main(){
     Alphabet a(n);
     a.read();
     Alphabet b=a.build_nsized_Alphabet(m);
-    b.build_code_arr(0);
-    b.print_codes();
     return 0;
 }

@@ -1,7 +1,7 @@
 all: test_build test_run
 
 test_build:
-	g++ src/test.cpp src/optimal_code.cpp -o build/test.out -O3 -g
+	g++ src/test.cpp src/optimal_code.cpp -o build/test.out -g -Wall
 
 test_run: test_build
 	build/test.out
