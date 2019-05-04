@@ -149,12 +149,12 @@ void Alphabet::build_code_arr(int mode){
 	}
 	//Заполнение кодов символов.
 	switch (mode){
-		case 0:
+		case SHENNON_FANO_CODE:
 			cout<<endl<<"Построение кода Шеннона - Фано.";
 			this->shennoncode_build_step(0,this->size);
 			break;
 		break;
-		case 1:
+		case HUFFMAN_CODE:
 			cout<<endl<<"Построение кода Хаффмана.";
 			this->getHuffmanCodes();
 			break;

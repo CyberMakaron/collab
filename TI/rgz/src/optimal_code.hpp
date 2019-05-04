@@ -9,6 +9,9 @@
 
 #define EPS 0.00001
 
+#define SHENNON_FANO_CODE 1
+#define HUFFMAN_CODE 2
+
 //Флаг выбора ввода, если закоментированно то будет компилироваться как 3/4 лаба
 //без добавление пробела как последнего символа, иначе добавляет символ "пробел" и считает его вероятность
 
@@ -65,7 +68,7 @@ public:
     double sum_probs(int begin,int end);
     //Шаг построения код Шеннона-Фано.
     void shennoncode_build_step(int begin,int end);
-    //Строит оптимальный код (0 - Шеннона-Фано, 1 - Хаффмана) 
+    //Строит оптимальный код 
     void build_code_arr(int mode);
     //Строит новый алфавит из n-грамм
     Alphabet build_nsized_Alphabet(int n);
