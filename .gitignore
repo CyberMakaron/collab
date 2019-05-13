@@ -50,3 +50,15 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+*.filters
+IOTI/lab4/ioti/.vs/ioti/v15/.suo
+*.db
+*.ipch
+*.log
+*.tlog
+*.sln
+*.vcxproj
+*.user
+IOTI/lab4/ioti/ioti/.vs/ioti/v15/.suo
+*.json
+*.sqlite
