@@ -126,14 +126,14 @@ std::ostream& operator <<(std::ostream& out, Simplex_table& A)
 {
 	out << "| б.п. |    св.ч.   |";
 	for (long i = 0; i < A.y - 1; i++)
-		out << "     x" << i + 1 << "     |";
+		out << "     y" << i + 1 << "     |";
 	out << std::endl;
 	for (long i = 0; i < A.x - 1; i++) {
 		out << "+------+";
 		for (long k = 0; k < A.y; k++)
 			out << "------------+";
 		out << std::endl;
-		out << "|  x" << A.base[i] << "  |";
+		out << "|  y" << A.base[i] << "  |";
 		for (long j = 0; j < A.y; j++)
 			out << A.T[i][j] << "|";
 		out << std::endl;

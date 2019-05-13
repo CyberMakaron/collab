@@ -3,7 +3,7 @@
 
 using namespace std;
 
-int main(){
+int main() {
 	setlocale(0, "RUS");
 	int m, n;
 	cout << "Введите размеры  платежной матрицы:" << endl;

@@ -1,5 +1,5 @@
 #pragma once
-#include "D:\labs\ioti\lab5\Simplex_table.h"
+#include "Simplex_table.h"
 using namespace std;
 
 class SaddlePoint : public Simplex_table {

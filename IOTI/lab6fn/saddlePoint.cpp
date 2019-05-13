@@ -4,14 +4,34 @@ using namespace std;
 
 
 void SaddlePoint::inputCosts() {
+	Fraction min;
+	bool flag = false;
+	Fraction mult;
+	mult.denominator = 1;
 	for (int i = 0; i < mc; i++) {
 		for (int j = 0; j < nc; j++) {
 			cin >> costs[i][j];
+			if (costs[i][j] < 0) {
+				if (min > costs[i][j]) {
+					min = costs[i][j];
+				}
+				flag = true;
+			}
 		}
 	}
+	if (flag) {
+		cout << "Была введена матрица стоимостей с отрицательными значениями, это может повлиять на корректность ответа." << endl << "Минимальное значение: " << min << ", выберите число больше этого, чтобы прибавить его к матрице стоимостей: ";
+		cin >> mult;
+		for (int i = 0; i < mc; i++){
+			for (int j = 0; j < nc; j++) {
+				costs[i][j] += mult;
+			}
+		}
+	}
+	
 	for (int i = 0; i < mc; i++) {
 		for (int j = 0; j < nc; j++) {
-			SLU[i][j] =  costs[i][j];
+			SLU[i][j] = costs[i][j];
 		}
 	}
 	int j = 0;
@@ -36,7 +56,7 @@ void SaddlePoint::getSaddlePoint() {
 			if (costs[i][j] < min) {
 				min = costs[i][j];
 			}
-			
+
 		}
 		mins[i] = min;
 	}
@@ -66,14 +86,14 @@ void SaddlePoint::getSaddlePoint() {
 			lowerPos = i;
 		}
 	}
-	
+
 	if (lowerCost == upperCost) {
 		cout << "Седловая точка: (" << upperPos + 1 << ", " << lowerPos + 1 << ")" << endl;
 		cout << "Цена игры: " << lowerCost << endl;
 	}
 }
 
-long SaddlePoint::Search(long* a, long n, long k, long* j){
+long SaddlePoint::Search(long* a, long n, long k, long* j) {
 	for (long i = 0; i < n; i++)
 		if (k == a[i]) {
 			*j = i;
@@ -88,9 +108,11 @@ void SaddlePoint::solveMixedStrats() {
 	while (SimplexStep()) cout << *this << endl;
 	getMatching();
 	//printMatching();
-
+	Fraction zero;
+	zero.numerator = 0;
+	zero.denominator = 1;
 	cout << "F max = Z min = " << T[x - 1][0] << endl;
-	
+
 
 
 	bool flag = false;
@@ -104,7 +126,7 @@ void SaddlePoint::solveMixedStrats() {
 			}
 		}
 		if (!flag) {
-			cout << " 0 ";
+			cout << zero;
 		}
 	}
 	cout << ")" << endl;
@@ -121,7 +143,15 @@ void SaddlePoint::solveMixedStrats() {
 	g = one / g;
 	cout << "Цена игры: " << g << endl;
 	cout << "Оптимальная смешанная стратегия игрока 1:";
-	cout << "P = ( ";
+	cout << "P = (";
+	for (int i = nc + 1; i < mc + nc + 1; i++) {
+		Fraction tmp;
+		tmp = T[x - 1][i] * g;
+		cout << tmp;
+	}
+	cout << ")" << endl << endl;
+	cout << "Оптимальная смешанная стратегия игрока 2:";
+	cout << "Q = ( ";
 	for (int i = 1; i < nc + 1; i++) {
 		flag = false;
 		for (int s = 0; s < x - 1 && !flag; s++) {
@@ -132,18 +162,11 @@ void SaddlePoint::solveMixedStrats() {
 			}
 		}
 		if (!flag) {
-			cout << " 0 \t";
+			cout << zero;
 		}
 	}
 	cout << ")" << endl;
-	cout << "Оптимальная смешанная стратегия игрока 2:";
-	cout << "Q = (";
-	for (int i = nc + 1; i < mc + nc + 1; i++) {
-		Fraction tmp;
-		tmp = T[x - 1][i] * g;
-		cout << tmp;
-	}
-	cout << ")" << endl << endl;
+
 }
 
 void SaddlePoint::getMatching() {
