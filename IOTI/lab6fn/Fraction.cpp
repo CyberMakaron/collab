@@ -26,7 +26,7 @@ std::istream& operator >>(std::istream& in, Fraction& a)
 	char c;
 	in >> a.numerator;
 	c = getchar();
-	if (c == '/')			//ïîñëå ÷èëà ëèáî äðîáü, ëèáî ïðîáåë (öåëîå ÷èñëî)
+	if (c == '/')			//Ð¿Ð¾ÑÐ»Ðµ Ñ‡Ð¸Ð»Ð° Ð»Ð¸Ð±Ð¾ Ð´Ñ€Ð¾Ð±ÑŒ, Ð»Ð¸Ð±Ð¾ Ð¿Ñ€Ð¾Ð±ÐµÐ» (Ñ†ÐµÐ»Ð¾Ðµ Ñ‡Ð¸ÑÐ»Ð¾)
 		in >> a.denominator;
 	else a.denominator = 1;
 	a.ReduceFrac();

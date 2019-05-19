@@ -28,7 +28,7 @@ void Simplex_table::GetSimplexTable()
 					break;
 				}
 	}
-	x = 1; //обязательно есть строка целевой функции
+	x = 1; //РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РµСЃС‚СЊ СЃС‚СЂРѕРєР° С†РµР»РµРІРѕР№ С„СѓРЅРєС†РёРё
 	for (long i = 0; i < n - 1; i++)
 		if (a[i] == 1) x++;
 	y = n;
@@ -47,7 +47,7 @@ void Simplex_table::GetSimplexTable()
 			k++;
 		}
 	for (long i = 0; i < n - 1; i++) {
-		T[k][i + 1].numerator = -Z[i].numerator;		//по итогу k = x - 1, т.е послежня строка
+		T[k][i + 1].numerator = -Z[i].numerator;		//РїРѕ РёС‚РѕРіСѓ k = x - 1, С‚.Рµ РїРѕСЃР»РµР¶РЅСЏ СЃС‚СЂРѕРєР°
 		T[k][i + 1].denominator = Z[i].denominator;
 	}
 	T[k][0] = Z[n - 1];
@@ -57,7 +57,7 @@ void Simplex_table::GetSimplexTable()
 
 long Simplex_table::SimplexStep()
 {
-	long i, j = 1, p, q, t; //p, q - индексы разрешающего элемента
+	long i, j = 1, p, q, t; //p, q - РёРЅРґРµРєСЃС‹ СЂР°Р·СЂРµС€Р°СЋС‰РµРіРѕ СЌР»РµРјРµРЅС‚Р°
 	Fraction min, max, tmp;
 	Frac_arr tmp_arr(y);
 	for (j = 1; j < y; j++)
@@ -65,7 +65,7 @@ long Simplex_table::SimplexStep()
 			max = T[x - 1][j];
 			t = j;
 		}
-	if (max == 0) return 0;   //симплекс-таблица является последней
+	if (max == 0) return 0;   //СЃРёРјРїР»РµРєСЃ-С‚Р°Р±Р»РёС†Р° СЏРІР»СЏРµС‚СЃСЏ РїРѕСЃР»РµРґРЅРµР№
 	j = t;
 	for (i = 0; i < x - 1; i++)
 		if (T[i][j] > 0) {
@@ -110,7 +110,7 @@ long Simplex_table::Simplex()
 	GetSimplexTable(); std::cout << *this << std::endl;
 	while (SimplexStep()) std::cout << *this << std::endl;
 	std::cout << "Z_max = " << T[x - 1][0] << std::endl;
-	std::cout << "т.max (";
+	std::cout << "С‚.max (";
 	long j;
 	for (long i = 1; i < y; i++) {
 		if (Search(base, x - 1, i, &j))
@@ -124,7 +124,7 @@ long Simplex_table::Simplex()
 
 std::ostream& operator <<(std::ostream& out, Simplex_table& A)
 {
-	out << "| б.п. |    св.ч.   |";
+	out << "| Р±.Рї. |    СЃРІ.С‡.   |";
 	for (long i = 0; i < A.y - 1; i++)
 		out << "     y" << i + 1 << "     |";
 	out << std::endl;
@@ -142,7 +142,7 @@ std::ostream& operator <<(std::ostream& out, Simplex_table& A)
 	for (long k = 0; k < A.y; k++)
 		out << "------------+";
 	out << std::endl;
-	out << "|   Z  |";
+	out << "|   f  |";
 	for (long j = 0; j < A.y; j++)
 		out << A.T[A.x - 1][j] << "|";
 	out << std::endl;

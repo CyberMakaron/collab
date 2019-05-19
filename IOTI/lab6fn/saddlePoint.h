@@ -4,11 +4,11 @@ using namespace std;
 
 class SaddlePoint : public Simplex_table {
 public:
-	long mc, nc; //размеры платежной матрицы
+	long mc, nc; //СЂР°Р·РјРµСЂС‹ РїР»Р°С‚РµР¶РЅРѕР№ РјР°С‚СЂРёС†С‹
 	Fraction lowerCost, upperCost, g;
 	int lowerPos, upperPos;
 	Frac_matr costs;
-	int* matching; //Соответствие переменных: индекс - x, значение - у
+	int* matching; //РЎРѕРѕС‚РІРµС‚СЃС‚РІРёРµ РїРµСЂРµРјРµРЅРЅС‹С…: РёРЅРґРµРєСЃ - x, Р·РЅР°С‡РµРЅРёРµ - Сѓ
 	
 	SaddlePoint(int mc, int nc) :Simplex_table(mc, mc + nc + 1), mc(mc), nc(nc), costs(mc, nc) {
 		for (int i = 0; i < nc; i++) {

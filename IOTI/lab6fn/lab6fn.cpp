@@ -1,10 +1,11 @@
-﻿#include <iostream>
+#include <iostream>
 #include "saddlePoint.h"
 
 using namespace std;
 
 int main() {
-	setlocale(0, "RUS");
+	system("chcp 65001");
+	//setlocale(0, "RUS");
 	int m, n;
 	cout << "Введите размеры  платежной матрицы:" << endl;
 	cin >> m >> n;
